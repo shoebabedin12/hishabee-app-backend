@@ -21,7 +21,7 @@ router.get("/all-client",  allClient);
 router.get("/all-client-payments-status", getAllClientPaymentsController);
 // post request
 router.post("/add-client", addClientController);
-router.post("/add-client-payment-history", addClientPaymentHistoryController);
+router.post("/add-product", addClientPaymentHistoryController);
 router.post("/update-single-client-details", updateSingleClientPaymentDetails);
 router.post("/add-all-client", updatePaymentDetails);
 // delete request

@@ -65,25 +65,22 @@ const addClientController = async (req, res) => {
   }
   try {
     for (const clientData of clientsData) {
-      const { name, macAddress, device, roomNo } = clientData;
+      const { month, startDate } = clientData;
 
-      if (!name || !macAddress || !device || !roomNo) {
+      if (!month || !startDate) {
         return res
           .status(400)
           .json({ message: "Please enter all fields for each client" });
       }
 
-      const existingClient = await Client.findOne({ name: name });
+      const existingClient = await Client.findOne({ month: month });
 
       if (existingClient) {
         return res.status(403).json({ message: "Client already exists" });
       }
 
       const newClient = new Client({
-        name,
-        macAddress,
-        device,
-        roomNo
+        month, startDate
       });
 
       await newClient.save();
@@ -121,24 +118,32 @@ const allClient = async (req, res) => {
         (paymentDetail) => ({
           key: paymentDetail._id,
           clientId: paymentDetail.clientId,
-          paymentAmount: paymentDetail.paymentAmount,
-          paymentDate: paymentDetail.paymentDate,
-          paymentMonth:
-            paymentDetail.paymentMonth, // Convert array to string
-          paymentStatus: paymentDetail.paymentStatus,
+          productName: paymentDetail.productName,
+          weightAmount: paymentDetail.weightAmount,
+          weightType:
+            paymentDetail.weightType, // Convert array to string
+          price: paymentDetail.price,
           createdAt: paymentDetail.createdAt,
           updatedAt: paymentDetail.updatedAt
         })
       );
+
+      // Calculate the sum of all prices
+      const totalPrice = client.paymentDetails.reduce((sum, paymentDetail) => {
+        // Ensure price is treated as a number
+        const price = parseFloat(paymentDetail.price);
+        return sum + (isNaN(price) ? 0 : price);
+      }, 0);
+      
       return {
         key: client._id,
-        name: client.name,
-        macAddress: client.macAddress,
-        device: client.device,
-        roomNo: client.roomNo,
-        status: client.status,
+        month: client.month,
+        startDate: client.startDate,
+        payingDate: client.payingDate,
+        // paymentStatus: client.paymentStatus,
         paymentStatus: paymentStatus,
-        paymentDetails: formattedPaymentDetails
+        paymentDetails: formattedPaymentDetails,
+        totalPrice: totalPrice,
       };
     });
 
@@ -199,10 +204,10 @@ const addClientPaymentHistoryController = async (req, res) => {
   try {
     const {
       clientId,
-      paymentDate,
-      paymentMonth,
-      paymentAmount,
-      paymentStatus
+      productName, 
+      weightAmount, 
+      weightType, 
+      price
     } = req.body;
 
     if (!clientId) {
@@ -228,10 +233,10 @@ const addClientPaymentHistoryController = async (req, res) => {
 
     const clientPayment = new ClientPayment({
       clientId,
-      paymentDate,
-      paymentMonth,
-      paymentAmount,
-      paymentStatus
+      productName, 
+      weightAmount, 
+      weightType, 
+      price
     });
 
     // Save the client payment record to the database
@@ -256,6 +261,7 @@ const getAllClientPaymentsController = async (req, res) => {
   try {
     // Fetch all users from the database using the Client model
     const users = await Client.find();
+    
 
     // Get the current month and year
     const currentDate = new Date();

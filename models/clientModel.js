@@ -3,36 +3,32 @@ const Schema = mongoose.Schema;
 
 const clientSchema = new Schema(
   {
-    name: {
-      type: String,
-      required: true,
+    month: {
+      type: String
+      // required: true,
     },
-    macAddress: {
-      type: String,
-      required: true,
+    startDate: {
+      type: String
+      // required: true,
     },
-    device: {
+    payingDate: {
       type: String,
-      required: true,
+      // required: true,
     },
-    roomNo: {
+    paymentStatus: {
       type: String,
-      required: true,
-    },
-    status: {
-      type: String,
-      default: "Disconnect",
-      required: true,
+      default: "pending"
+      // required: true,
     },
     paymentDetails: [
       {
         type: Schema.Types.ObjectId,
-        ref: "ClientPayment",
-      },
-    ],
+        ref: "ClientPayment"
+      }
+    ]
   },
   {
-    timestamps: true,
+    timestamps: true
   }
 );
 

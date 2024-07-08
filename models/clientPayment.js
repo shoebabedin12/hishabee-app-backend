@@ -7,19 +7,19 @@ const clientPaymentSchema = new Schema({
         type: String,
         required: true,
     },
-    paymentDate: {
-        type: Date,
+    productName: {
+        type: String,
         required: true,
     },
-    paymentMonth: {
-        type: Array,
+    weightAmount: {
+        type: String,
         required: true
     },
-    paymentAmount: {
-        type: Number,
+    weightType: {
+        type: String,
         required: true,
     },
-    paymentStatus: {
+    price: {
         type: String,
         required: true,
     },
