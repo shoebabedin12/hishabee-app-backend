@@ -120,9 +120,8 @@ const allClient = async (req, res) => {
           clientId: paymentDetail.clientId,
           productName: paymentDetail.productName,
           weightAmount: paymentDetail.weightAmount,
-          weightType:
-            paymentDetail.weightType, // Convert array to string
-          price: paymentDetail.price,
+          weightType: paymentDetail.weightType, // Convert array to string
+          price: parseFloat(paymentDetail.price),
           createdAt: paymentDetail.createdAt,
           updatedAt: paymentDetail.updatedAt
         })
@@ -134,6 +133,8 @@ const allClient = async (req, res) => {
         const price = parseFloat(paymentDetail.price);
         return sum + (isNaN(price) ? 0 : price);
       }, 0);
+
+      
       
       return {
         key: client._id,
@@ -144,6 +145,7 @@ const allClient = async (req, res) => {
         paymentStatus: paymentStatus,
         paymentDetails: formattedPaymentDetails,
         totalPrice: totalPrice,
+        totalItem: client.paymentDetails.length,
       };
     });
 

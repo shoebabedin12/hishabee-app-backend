@@ -9,7 +9,7 @@ const port = process.env.PORT || 5000; // Use PORT environment variable or defau
 const route = require('./routes');
 const mongodb = require('./config/mongodb');
 
-app.options("*", cors());
+app.options("*", cors({origin: 'https://hishabee-app-frontend.vercel.app'}));
 app.use(cors());
 // Other middleware
 app.use(bodyParser.urlencoded({ extended: false }));
